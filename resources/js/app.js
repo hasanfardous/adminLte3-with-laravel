@@ -15,8 +15,27 @@ Vue.component(HasError.name, HasError)
 Vue.component(AlertError.name, AlertError)
 
 import VueRouter from 'vue-router'
-Vue.use(VueRouter)
+Vue.use(VueRouter, {
+  color: 'rgb(143, 255, 199)',
+  filedColor: 'red',
+  height: '3px',
+})
 
+import VueProgressBar from 'vue-progressbar'
+Vue.use(VueProgressBar)
+
+import Swal from 'sweetalert2'
+window.Swal = Swal;
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 3000
+});
+
+window.Toast = Toast;
+window.Fire = new Vue();
 
 let routes = [
     { path: '/dashboard', component: require('./components/Dashboard.vue').default },

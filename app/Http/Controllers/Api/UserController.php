@@ -31,6 +31,7 @@ class UserController extends Controller
             'name' => 'required|string|max:191',
             'email' => 'required|string|email|max:191|unique:users',
             'password' => 'required|string|min:8',
+            'type' => 'required|string|min:3',
         ]);
         
         return User::create([
@@ -74,6 +75,10 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = User::findOrFail($id);
+
+        $user->delete();
+
+        return ['message' => 'User deleted!'];
     }
 }

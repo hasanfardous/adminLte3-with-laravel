@@ -32,7 +32,7 @@
                     <td>{{ user.created_at | myDate }}</td>
                     <td>
                         <a href="#"><i class="fa fa-edit text-blue"></i></a> | 
-                        <a href="#"><i class="fa fa-trash text-red"></i></a>
+                        <a href="#" @click="deleteUser(user.id)"><i class="fa fa-trash text-red"></i></a>
                     </td>
                   </tr>
                 </tbody></table>
@@ -123,16 +123,69 @@
 
         methods: {
             createUser(){
+                this.$Progress.start();
                 this.form.post('api/user')
+                .then(() => {
+                    Fire.$emit('AfterCreated');
+                    $('#adminModal').modal('hide');
+
+                    Toast.fire({
+                        type: 'success',
+                        title: 'User created in Successfully'
+                    });
+
+                    this.$Progress.finish();
+                })
+                .catch(() => {
+                    Toast.fire({
+                        type: 'error',
+                        title: 'Sorry! Error happend, try again.'
+                    });
+                })
+
+            },
+
+            deleteUser(id){
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to delete this!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.value) {
+                        this.form.delete('api/user/'+id).then(()=> {
+                            Swal.fire(
+                            'Deleted!',
+                            'User has been deleted.',
+                            'success'
+                            )
+                            Fire.$emit('AfterCreated');
+                        }).catch(() => {
+                            Swal.fire(
+                                'Failed!',
+                                'There was something wrong.',
+                                'warning'
+                            )
+                        })
+                    }
+
+                })
             },
             
             loadUsers() {
                 axios.get('api/user').then(({data}) => (this.users = data.data));
-            }
+            },
         },
         
         created() {
             this.loadUsers();
+            // setInterval(() => this.loadUsers(), 3000);
+            Fire.$on('AfterCreated', () => {
+                this.loadUsers();
+            });
         }
     }
 </script>

@@ -75,7 +75,7 @@
 
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-cog text-blue"></i>
+              <i class="nav-icon fas fa-cog text-green"></i>
               <p>
                 Management
                 <i class="right fa fa-angle-left"></i>
@@ -125,6 +125,7 @@
     <div class="content-header">
       <div class="container-fluid">
         <router-view></router-view>
+        <vue-progress-bar></vue-progress-bar>
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content-header -->
