@@ -7,14 +7,21 @@
 require('./bootstrap');
 
 // import Vue from 'vue'
-import VueRouter from 'vue-router'
 window.Vue = require('vue');
+import { Form, HasError, AlertError} from 'vform';
+import moment from 'moment';
+window.form = Form;
+Vue.component(HasError.name, HasError)
+Vue.component(AlertError.name, AlertError)
+
+import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 
 let routes = [
     { path: '/dashboard', component: require('./components/Dashboard.vue').default },
-    { path: '/profile', component: require('./components/Profile.vue').default }
+    { path: '/profile', component: require('./components/Profile.vue').default },
+    { path: '/users', component: require('./components/Users.vue').default }
   ]
 
 
@@ -22,6 +29,15 @@ let routes = [
     'mode': 'history',
     routes // short for `routes: routes`
   })
+
+
+  Vue.filter('upText', function(text) {
+    return text.charAt(0).toUpperCase() + text.slice(1);
+});
+
+Vue.filter('myDate', function(created){
+  return moment(created).format('MMMM Do YYYY');
+});
 
 /**
  * The following block of code may be used to automatically register your
@@ -43,6 +59,6 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
  */
 
 const app = new Vue({
-    el: '#app',
+  el: '#app',
     router
 });
