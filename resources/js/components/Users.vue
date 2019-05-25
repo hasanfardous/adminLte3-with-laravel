@@ -7,7 +7,7 @@
                 <h3 class="card-title">Users Table</h3>
 
                 <div class="card-tools">
-                  <button class="btn btn-success" data-toggle="modal" data-target="#adminModal">
+                  <button class="btn btn-success" @click="newModal">
                       Add New <i class="fa fa-user-plus fa-fw"></i>
                   </button>
                 </div>
@@ -31,7 +31,7 @@
                     <td>{{ user.type | upText }}</td>
                     <td>{{ user.created_at | myDate }}</td>
                     <td>
-                        <a href="#"><i class="fa fa-edit text-blue"></i></a> | 
+                        <a href="#" @click="editModal(user)"><i class="fa fa-edit text-blue"></i></a> | 
                         <a href="#" @click="deleteUser(user.id)"><i class="fa fa-trash text-red"></i></a>
                     </td>
                   </tr>
@@ -43,13 +43,14 @@
           </div>
         </div>
 
-        <form @submit.prevent="createUser">
+        <form @submit.prevent="editMode ? updateUser() : createUser()">
         <!-- Modal -->
         <div class="modal fade" id="adminModal" tabindex="-1" role="dialog" aria-labelledby="adminModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="adminModalLabel">Add New User</h5>
+                <h5 class="modal-title" v-show="!editMode" id="adminModalLabel">Add New User</h5>
+                <h5 class="modal-title" v-show="editMode" id="adminModalLabel">Update the User</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
@@ -94,7 +95,8 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary btn-danger" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="submit" v-show="!editMode" class="btn btn-primary">Save</button>
+                <button type="submit" v-show="editMode" class="btn btn-success">Update</button>
             </div>
             </div>
         </div>
@@ -109,20 +111,59 @@
     export default {
         data () {
             return {
-            users: {},
-            form: new Form({
-                name: '',
-                email: '',
-                password: '',
-                type: '',
-                bio: '',
-                photo: '',
-            })
+                editMode: false,
+                users: {},
+                form: new Form({
+                    id: '',
+                    name: '',
+                    email: '',
+                    password: '',
+                    type: '',
+                    bio: '',
+                    photo: '',
+                })
             }
         },
 
         methods: {
+            newModal(){
+                this.editMode = false;
+                this.form.reset();
+                $('#adminModal').modal('show');
+            },
+
+            editModal(user){
+                this.editMode = true;
+                this.form.reset();
+                $('#adminModal').modal('show');
+                this.form.fill(user);
+            },
+            
+            updateUser(){
+                this.$Progress.start();
+                this.form.put('api/user/'+this.form.id)
+                .then(() => {
+                    Fire.$emit('AfterCreated');
+                    $('#adminModal').modal('hide');
+
+                    Toast.fire({
+                        type: 'success',
+                        title: 'User updated in Successfully'
+                    });
+
+                    this.$Progress.finish();
+                })
+                .catch(() => {
+                    // Toast.fire({
+                    //     type: 'error',
+                    //     title: 'Sorry! Error happend, try again.'
+                    // });
+                    this.$Progress.fail();
+                })
+            },
+            
             createUser(){
+                // this.editMode = false;
                 this.$Progress.start();
                 this.form.post('api/user')
                 .then(() => {
