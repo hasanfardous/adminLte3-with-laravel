@@ -9,6 +9,10 @@ require('./bootstrap');
 // import Vue from 'vue'
 window.Vue = require('vue');
 import { Form, HasError, AlertError} from 'vform';
+
+import Gate from "./Gate";
+Vue.prototype.$gate = new Gate(window.user);
+
 import moment from 'moment';
 window.form = Form;
 Vue.component(HasError.name, HasError)
