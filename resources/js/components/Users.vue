@@ -43,6 +43,10 @@
           </div>
         </div>
 
+        <div v-if="!$gate.isAdmin()">
+            <not-found></not-found>
+        </div>
+
         <form @submit.prevent="editMode ? updateUser() : createUser()">
         <!-- Modal -->
         <div class="modal fade" id="adminModal" tabindex="-1" role="dialog" aria-labelledby="adminModalLabel" aria-hidden="true">

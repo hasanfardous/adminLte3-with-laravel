@@ -56,6 +56,7 @@
         <div class="info">
           <a href="#" class="d-block">
             {{ Auth::user()->name }}
+            <p>{{Auth::user()->type}}</p>
           </a>
         </div>
       </div>
@@ -72,7 +73,7 @@
               </p>
             </router-link>
           </li>
-          
+
           @can('isAdmin')
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
