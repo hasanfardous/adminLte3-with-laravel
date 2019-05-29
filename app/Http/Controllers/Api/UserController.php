@@ -25,6 +25,23 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function search()
+    {
+        if ($search = \Request::get('q')) {
+            $users = User::where(function($query) use ($search){
+                $query->where('name', 'LIKE', "%$search%")
+                        ->orWhere('email', 'LIKE', "%$search%");
+            })->paginate(20);
+        }
+
+        return $users;
+    }
+    
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
         // $this->authorize('isAdmin');

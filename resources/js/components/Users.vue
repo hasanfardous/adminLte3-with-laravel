@@ -238,6 +238,16 @@
         },
         
         created() {
+            Fire.$on('searching', () => {
+                let query = this.$parent.search;
+                axios.get('api/findUser?q=' + query)
+                .then((data) => {
+                    this.users = data.data
+                })
+                .catch(() => {
+
+                })
+            })
             this.loadUsers();
             // setInterval(() => this.loadUsers(), 3000);
             Fire.$on('AfterCreated', () => {
